@@ -1,2 +1,2 @@
-var initial = require('./init/initial');
+var initial = require('./init/initial2');
 initial.init();

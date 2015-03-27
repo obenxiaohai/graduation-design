@@ -1,7 +1,13 @@
 var fs = require('fs');
 var xlsx = require('node-xlsx');
-var num = "";
+/*
+	examId:记录试卷号
+	cur :记录当前题号
+	content:记录题目内容
+*/
 var examId = 0;
+var cur=1;
+var content='';
 exports.init = function(){
 	fs.readFile('./init/info.json','utf8',function(err,data){
 		var ini = JSON.parse(data);
@@ -18,10 +24,11 @@ num:人数,grade:级别,
 function createQuestion(num,grade,singleS,multiS,judge,shortA){
 	if(typeof num === 'number' && typeof grade === 'number'){
 		for (var i = 0; i < num; i++) {
-			gotQuestion(grade,singleS);
-			//gotQuestion(num,grade,multiS);
-			//gotQuestion(num,grade,judge);
-			//gotQuestion(num,grade,shortA);	
+			cur=1;
+			cur=gotQuestion(grade,singleS,cur);
+			//cur=gotQuestion(grade,multiS,cur);
+			//cur=gotQuestion(grade,judge,cur);
+			//gotQuestion(grade,shortA,cur);
 		}
 	}
 	else{
@@ -29,7 +36,7 @@ function createQuestion(num,grade,singleS,multiS,judge,shortA){
 	}
 }
 //获取试题
-function gotQuestion(grade,Quest_type){
+function gotQuestion(grade,Quest_type,curQ){
 	var data =null;
 	var len=0;
 	try{
@@ -52,7 +59,7 @@ function gotQuestion(grade,Quest_type){
 		throw new Error();
 	}
 			
-	var content="{";
+	
 	//该句表示表一第一条记录的第一项。
 	//console.log('data0:'+data[0][0]);
 	//随机选题
@@ -60,15 +67,19 @@ function gotQuestion(grade,Quest_type){
 	//	content += '"Q'+i+'":["'+data[i-1][0]+"\",\""+data[i-1][1]+"\"],"+'\n'
 	//}
 	var group = getRand(len,Quest_type[1]);
-	for (var i = 0; i < Quest_type[1]; i++) {
-		content += '"Q'+i+'":["'+data[group[i]][0]+"\",\""+data[group[i]][1]+"\"],"+'\n'
+
+	switch(Quest_type[0]){
+		case 'SingleSelect.xlsx': dealSingle(Quest_type,content,group,data,curQ);break;
+		case 'MutiSelect.xlsx'  : 
+		case 'Judgment.xlsx'    : dealMutiAndJudg(Quest_type,content,group,data,curQ);break;
+		case 'ShortAnswer.xlsx' : dealShortA(Quest_type,content,group,data,curQ);break;
+		default:break;
 	}
-	content +="}";
-	console.log(content);
+	//console.log('Quest_type:'+Quest_type);
+	//console.log(content);
 	
 	//console.log('group:'+getRand(len,Quest_type[1]));
-	examId++;
-	writeToFile(examId,content);
+	return curQ;
 }
 
 
@@ -94,7 +105,7 @@ function getRand(len,Qnum){
 				break;
 			}
 		}
-		console.log('i:'+i+',sum:'+sum);
+		//console.log('i:'+i+',sum:'+sum);
 		if(i === sum){
 			group[sum] = temp;
 			sum++;
@@ -106,6 +117,33 @@ function getRand(len,Qnum){
 
 function writeToFile(id,data){
 	fs.writeFile('./exam/'+id+'.json',data,function(){
+
 		console.log('生成第'+id+'份试卷成功！');
-	})
+	});
+}
+
+function dealSingle(Quest_type,content,group,data,curQ){
+	content += '{';
+	for (var i = 0; i < Quest_type[1]; i++) {
+		content += '"Q'+(i+1)+'":["'+data[group[i]][0]+"\",\""+data[group[i]][1]+"\"],"+'\n'
+	}
+	curQ += Quest_type[1];
+}
+
+function dealMutiAndJudg(Quest_type,content,group,data,curQ){
+	for (var i = 0; i < Quest_type[1]; i++) {
+		content += '"Q'+curQ+'":["'+data[group[i]][0]+"\",\""+data[group[i]][1]+"\"],"+'\n'
+	}
+	curQ += Quest_type[1];
+}
+
+
+function dealShortA(Quest_type,content,group,data,curQ){
+	for (var i = 0; i < Quest_type[1]; i++) {
+		content += '"Q'+curQ+'":["'+data[group[i]][0]+"\",\""+data[group[i]][1]+"\"],"+'\n'
+	}
+	curQ = 1;
+	content+='}'
+	examId++;
+	writeToFile(examId,content);
 }
