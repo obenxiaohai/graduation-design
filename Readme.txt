@@ -1,0 +1,1 @@
+进入git 通过指令$touch .gitignore生成该文件。
