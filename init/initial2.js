@@ -27,7 +27,7 @@ function createQuestion(num,grade,singleS,multiS,judge,shortA){
 		gotQuestion(num,grade,singleS,multiS,judge,shortA,cur);	
 	}
 	else{
-		console.log('info.json文件中的数据类型有误！请键入数字')
+		console.log('info.json文件中的数据类型有误！请键入数字');
 	}
 }
 
