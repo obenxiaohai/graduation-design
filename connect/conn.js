@@ -3,6 +3,7 @@ var server = net.createServer();
 var sockets = [];
 var stuNum = 1;
 var fs = require('fs');
+var router = require('../route/route');
 exports.createServer = function(){
 
 	server.on('connection',function(socket){
@@ -14,22 +15,14 @@ exports.createServer = function(){
 	sockets.push(socket);
 	socket.on('data',function(data){
 		//console.log('got data: ',data);
-		sockets.forEach(function(otherSocket){
-			if(otherSocket !== socket){
-				//console.log("otherSocket="+otherSocket);
-				try{
-					otherSocket.write(data);
-				}catch(e){
-				}
-				
-			}
-		});
+		//route函数，用于区分login操作或upload
+		//格式: login@#$name@#$password@#$ans@#ans@#ans
+		router.route(data,socket);
 		str+=data;
 	});
 	socket.on('end',function(){
 		//console.log('got data:',str);
-		//route函数，用于区分login操作或upload
-		route(str);
+		//route(str);
 	});
 });
 server.on('error',function(err){
