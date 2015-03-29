@@ -15,6 +15,7 @@ exports.route = function(str,socket){
 		case 'login' : toLogin(toPath[1],toPath[2],socket);break;
 		case 'upload':  toUpload(toPath[1],toPath[2]);break;
 		case 'uploadAll': toUploadAll(toPath[1],toPath[2]);break;
+		case 'getScore' :toGetScore();break;
 		default : return 'err';
 	}
 }
