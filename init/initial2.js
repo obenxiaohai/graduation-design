@@ -94,8 +94,12 @@ function createExam(obj1,obj2,obj3,obj4,singleS,multiS,judge,shortA){
 	len = obj4[1];
 	group = getRand(len,shortA[1]);
 	for (var i = 0; i < shortA[1]; i++) {
-		content += '"Q'+(curQ+i)+'":["'+data[group[i]][0]+"\",\""+data[group[i]][1]+"\",\"\"],"+'\n'
+		if(i < shortA[1]-1)
+		content += '"Q'+(curQ+i)+'":["'+data[group[i]][0]+"\",\""+data[group[i]][1]+"\",\"\"],"+'\n';
+		else
+		content += '"Q'+(curQ+i)+'":["'+data[group[i]][0]+"\",\""+data[group[i]][1]+"\",\"\"]"+'\n';	
 	}
+
 	content+='}'
 	examId++;
 	writeToFile(examId,content);

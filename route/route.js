@@ -1,4 +1,5 @@
-var access = require('../stuInfo/conAccess')
+var access = require('../stuInfo/conAccess');
+var record = require('../stuInfo/conRecord');
 exports.route = function(str,socket){
 	var toPath;
 		//这里有一个事实：如果传入的字符串没有@#$，
@@ -8,9 +9,9 @@ exports.route = function(str,socket){
 	//login:
 	//"login@#$jia@#$pasword"
 	//upload:
-	//"upload@#$jia@#$ans"
+	//"upload@#$paperID@#$ans"
 	//uploadAll:
-	//"uploadAll@#$jia@#$ans"
+	//"uploadAll@#$paperID@#$ans"
 	switch(toPath[0]){
 		case 'login' : toLogin(toPath[1],toPath[2],socket);break;
 		case 'upload':  toUpload(toPath[1],toPath[2]);break;
@@ -21,12 +22,12 @@ exports.route = function(str,socket){
 }
 
 function toLogin(name,password,socket){
-	console.log('name:'+name);
+	//console.log('name:'+name);
 	access.Login(name,password,socket);
 }
-function toUpload(name,ans){
-	return 'record';
+function toUpload(paperID,ans){
+	record.WriteAnswer(paperID,ans);
 }
-function toUploadAll(name,ans){
+function toUploadAll(paperID,ans){
 	return 'recordAll';
 }
