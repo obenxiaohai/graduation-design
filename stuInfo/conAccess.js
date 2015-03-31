@@ -4,6 +4,16 @@ var fs = require('fs');
 var accessfile = './demo.mdb';
 var examPath = './exam/';
 var paperID = 1;
+exports.toStoreScore = function(sumGrade,paperID){
+	var paperid = parseInt(paperID);
+	access.execute({ 
+	accessfile: 'demo.mdb', 
+	//sql: "UPDATE demo SET paperID = "+paperid+" WHERE id ="+"'"+id+"'"
+	sql: util.format("UPDATE demo SET score =%d WHERE paperID =%d",+sumGrade,+paperid)
+	}, function(data){ 
+	//console.log(data); 
+	}); 
+};
 exports.Login = function(name,pwd,socket){
 	 access.query({ 
 		accessfile: accessfile, 

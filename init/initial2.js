@@ -7,8 +7,10 @@ var xlsx = require('node-xlsx');
 */
 var cur = 1; 
 var examId = 0;
+
 exports.init = function(){
 	fs.readFile('./init/info.json','utf8',function(err,data){
+		if(err) throw err;
 		var ini = JSON.parse(data);
 		console.log('考试人数为：'+ ini.stuNum+'人');
 		console.log('难度级别为：'+ ini.grade+'级');
@@ -73,21 +75,21 @@ function createExam(obj1,obj2,obj3,obj4,singleS,multiS,judge,shortA){
 	var group = getRand(len,singleS[1]);
 	var content = '{';
 	for (var i = 0; i < singleS[1]; i++) {
-		content += '"Q'+(i+1)+'":["'+data[group[i]][0]+"\",\""+data[group[i]][1]+"\",\"\"],"+'\n'
+		content += '"Q'+(i+1)+'":["'+data[group[i]][0]+"\",\""+data[group[i]][1]+"\",\"\",\"Single\",\"\"],"+'\n'
 	}
 	curQ += singleS[1];
 	data = obj2[0];
 	len = obj2[1];
 	group = getRand(len,multiS[1]);
 	for (var i = 0; i < multiS[1]; i++) {
-		content += '"Q'+(curQ+i)+'":["'+data[group[i]][0]+"\",\""+data[group[i]][1]+"\",\"\"],"+'\n'
+		content += '"Q'+(curQ+i)+'":["'+data[group[i]][0]+"\",\""+data[group[i]][1]+"\",\"\",\"Multi\",\"\"],"+'\n'
 	}
 	curQ += multiS[1];
 	data = obj3[0];
 	len = obj3[1];
 	group = getRand(len,judge[1]);
 	for (var i = 0; i < judge[1]; i++) {
-		content += '"Q'+(curQ+i)+'":["'+data[group[i]][0]+"\",\""+data[group[i]][1]+"\",\"\"],"+'\n'
+		content += '"Q'+(curQ+i)+'":["'+data[group[i]][0]+"\",\""+data[group[i]][1]+"\",\"\",\"Judge\",\"\"],"+'\n'
 	}
 	curQ += judge[1];
 	data = obj4[0];
@@ -95,9 +97,9 @@ function createExam(obj1,obj2,obj3,obj4,singleS,multiS,judge,shortA){
 	group = getRand(len,shortA[1]);
 	for (var i = 0; i < shortA[1]; i++) {
 		if(i < shortA[1]-1)
-		content += '"Q'+(curQ+i)+'":["'+data[group[i]][0]+"\",\""+data[group[i]][1]+"\",\"\"],"+'\n';
+		content += '"Q'+(curQ+i)+'":["'+data[group[i]][0]+"\",\""+data[group[i]][1]+"\",\"\",\"Short\",\"\"],"+'\n';
 		else
-		content += '"Q'+(curQ+i)+'":["'+data[group[i]][0]+"\",\""+data[group[i]][1]+"\",\"\"]"+'\n';	
+		content += '"Q'+(curQ+i)+'":["'+data[group[i]][0]+"\",\""+data[group[i]][1]+"\",\"\",\"Short\",\"\"]"+'\n';	
 	}
 
 	content+='}'

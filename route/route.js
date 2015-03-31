@@ -1,5 +1,7 @@
 var access = require('../stuInfo/conAccess');
 var record = require('../stuInfo/conRecord');
+var recordAll = require('../stuInfo/conRecordAll');
+var getfinalScore = require('../stuInfo/conGetScore');
 exports.route = function(str,socket){
 	var toPath;
 		//这里有一个事实：如果传入的字符串没有@#$，
@@ -16,7 +18,7 @@ exports.route = function(str,socket){
 		case 'login' : toLogin(toPath[1],toPath[2],socket);break;
 		case 'upload':  toUpload(toPath[1],toPath[2]);break;
 		case 'uploadAll': toUploadAll(toPath[1],toPath[2]);break;
-		case 'getScore' :toGetScore();break;
+		case 'getScore' :toGetScore(toPath[1]);break;
 		default : return 'err';
 	}
 }
@@ -29,5 +31,9 @@ function toUpload(paperID,ans){
 	record.WriteAnswer(paperID,ans);
 }
 function toUploadAll(paperID,ans){
-	return 'recordAll';
+	recordAll.WriteAnswer(paperID,ans);
+}
+
+function toGetScore(paperID){
+	getfinalScore.GetGrades(paperID);
 }
