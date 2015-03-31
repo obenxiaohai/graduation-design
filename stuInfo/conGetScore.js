@@ -1,6 +1,7 @@
 var get_score_Qnum = require('../init/initial2');
 var fs = require('fs');
 var StoreScore = require('./conAccess');
+var conRecord = require('./conRecordAll');
 /*
 partScore:
  获取到的数组元素分别为【单选，多选，判断，简答】
@@ -38,6 +39,7 @@ function toGet(paperID){
 				sumGrade += (parseInt(json['Q'+i][4]) ==NaN)?0:parseInt(json['Q'+i][4]);
 		}
 		console.log("总分:"+sumGrade);
+		conRecord.WriteGrade(paperID,json);
 		StoreScore.toStoreScore(sumGrade,paperID);
 	});
 }

@@ -18,3 +18,10 @@ exports.WriteAnswer = function(paperID,ans){
 	});
 
 };
+
+exports.WriteGrade = function(paperID,json){
+
+	fs.writeFile(examPath+paperID+'.json',JSON.stringify(json),'utf8',function(err){
+		if(err) throw err;
+		});
+}
