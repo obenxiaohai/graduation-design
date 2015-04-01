@@ -32,15 +32,28 @@ exports.Login = function(name,pwd,socket){
 			(function(paperID,name){
 				fs.readFile(examPath+paperID+'.json','utf8',function(err,data){
 					if (err) throw err;
-				socket.write('ok@#$'+paperID+'@#$'+data+'@#$');
-				givePaperID(paperID,name)
+					try{
+						socket.write('ok@#$'+paperID+'@#$'+data+'@#$');
+						givePaperID(paperID,name);
+					}catch(e){
+						console.log('学号为'+name+'的考生断开连接');
+						//Ensures that no more I/O activity happens on this socket. 
+						//Only necessary in case of errors (parse error or so).
+						socket.destroy();
+					}
+
 				//console.log('ok');
 			});
 			})(paperID,name);
 
 			paperID++;
 		}else{
-			socket.write('notok');
+			try{
+				socket.write('notok');
+			}catch(e){
+				console.log('学号为'+name+'的考生断开连接');
+				socket.destroy();
+			}
 			//console.log('notok');
 		} 
 	}); 
