@@ -39,7 +39,7 @@ exports.Login = function(name,pwd,socket){
 						console.log('学号为'+name+'的考生断开连接');
 						//Ensures that no more I/O activity happens on this socket. 
 						//Only necessary in case of errors (parse error or so).
-						socket.destroy();
+						//socket.destroy();
 					}
 
 				//console.log('ok');
@@ -52,7 +52,7 @@ exports.Login = function(name,pwd,socket){
 				socket.write('notok');
 			}catch(e){
 				console.log('学号为'+name+'的考生断开连接');
-				socket.destroy();
+				//socket.destroy();
 			}
 			//console.log('notok');
 		} 

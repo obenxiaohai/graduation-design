@@ -12,13 +12,22 @@ exports.createServer = function(){
 	socket.setNoDelay(true);
 	var str = '';
 	var content = '';
-	sockets.push(socket);
+	//sockets.push(socket);
 	socket.on('data',function(data){
 		//console.log('got data: ',data);
 		//route函数，用于区分login操作或upload
 		//格式: login@#$name@#$password@#$ans@#ans@#ans
-		router.route(data,socket);
-		str+=data;
+		try{
+			router.route(data,socket);
+			str+=data;
+		}catch(e){
+			console.log('连接出现问题');
+		}
+
+	});
+	process.on('uncaughtException', function (err) {
+  		console.error(err.stack);
+  		console.log("Node NOT Exiting...");
 	});
 	socket.on('end',function(){
 		//console.log('got data:',str);
@@ -27,11 +36,12 @@ exports.createServer = function(){
 });
 server.on('error',function(err){
 	console.log('Server error:',err.message);
+	socket.close();
 });
 server.on('close',function(){
 	console.log('Server closed.');
-	var index = sockets.indexOf(socket);
-	sockets.splice(index,1);
+	//var index = sockets.indexOf(socket);
+	//sockets.splice(index,1);
 });
 server.listen(4001);
 console.log('4001端口监听启动，开始试题分发。');		
