@@ -18,22 +18,24 @@ exports.Login = function(name,pwd,socket){
 	 access.query({ 
 		accessfile: accessfile, 
 		//sql: "SELECT password FROM demo WHERE id="+"'"+name+"'"
-		sql: util.format("SELECT password FROM demo WHERE id='%s'",+name)
+		sql: util.format("SELECT password,paperID FROM demo WHERE id='%s'",+name)
 		}, function(data){
-		var password;	
+		var password;
+		var realPaperId;	
 		try{
 			password = data.records[0].password;
+			realPaperId = data.records[0].paperID;
 		}catch(e){
 
 		}
 		console.log('password:'+password+' '+'pwd:'+pwd);
 		if(password == pwd){
-
 			(function(paperID,name){
 				fs.readFile(examPath+paperID+'.json','utf8',function(err,data){
 					if (err) throw err;
 					try{
-						socket.write('ok@#$'+paperID+'@#$'+data+'@#$');
+						socket.write('ok@#$'+paperID+'@#$'+data+'@#$\r\n');
+						console.log('data传输给用户:'+data);
 						givePaperID(paperID,name);
 					}catch(e){
 						console.log('学号为'+name+'的考生断开连接');
@@ -42,14 +44,14 @@ exports.Login = function(name,pwd,socket){
 						//socket.destroy();
 					}
 
-				//console.log('ok');
-			});
-			})(paperID,name);
-
-			paperID++;
+			    });
+			})((realPaperId==NaN || realPaperId == 0)?paperID:realPaperId,name);
+			if(parseInt(realPaperId) == NaN || parseInt(realPaperId) == 0)
+				paperID++;
 		}else{
 			try{
-				socket.write('notok');
+				socket.write('notok\r\n');
+				console.log('not OK for login');
 			}catch(e){
 				console.log('学号为'+name+'的考生断开连接');
 				//socket.destroy();
