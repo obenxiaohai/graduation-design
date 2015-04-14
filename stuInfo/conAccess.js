@@ -21,15 +21,17 @@ exports.Login = function(name,pwd,socket){
 		sql: util.format("SELECT password,paperID FROM demo WHERE id='%s'",+name)
 		}, function(data){
 		var password;
-		var realPaperId;	
+		var realPaperId;
+		var finish_exam;	
 		try{
 			password = data.records[0].password;
 			realPaperId = data.records[0].paperID;
+			finish_exam = data.records[0].score;
 		}catch(e){
 
 		}
 		console.log('password:'+password+' '+'pwd:'+pwd);
-		if(password == pwd){
+		if(password == pwd && (finish_exam ==NaN || parseInt(finish_exam) == 0)){
 			(function(paperID,name){
 				fs.readFile(examPath+paperID+'.json','utf8',function(err,data){
 					if (err) throw err;
