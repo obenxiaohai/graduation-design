@@ -27,11 +27,13 @@ exports.Login = function(name,pwd,socket){
 			password = data.records[0].password;
 			realPaperId = data.records[0].paperID;
 			finish_exam = data.records[0].score;
+			console.log('finish_exam:'+parseInt(finish_exam));
+			console.log('finish_exam==NaN?'+isNaN(parseInt(finish_exam)));
 		}catch(e){
 
 		}
 		console.log('password:'+password+' '+'pwd:'+pwd);
-		if(password == pwd && (finish_exam ==NaN || parseInt(finish_exam) == 0)){
+		if(password == pwd && isNaN(parseInt(finish_exam))){
 			(function(paperID,name){
 				fs.readFile(examPath+paperID+'.json','utf8',function(err,data){
 					if (err) throw err;
@@ -47,8 +49,8 @@ exports.Login = function(name,pwd,socket){
 					}
 
 			    });
-			})((realPaperId==NaN || realPaperId == 0)?paperID:realPaperId,name);
-			if(parseInt(realPaperId) == NaN || parseInt(realPaperId) == 0)
+			})((  isNaN(realPaperId) || realPaperId == 0)?paperID:realPaperId,name);
+			if( isNaN(parseInt(realPaperId) ) || parseInt(realPaperId) == 0)
 				paperID++;
 		}else{
 			try{
