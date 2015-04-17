@@ -34,7 +34,8 @@ function toGet(paperID){
 					case 'Single': (arr[1] == arr[2])?(json['Q'+i][4]=partScore[0]):(json['Q'+i][4]=0);break;
 					case 'Multi' : (arr[1] == arr[2])?(json['Q'+i][4]=partScore[1]):(json['Q'+i][4]=0);break;
 					case 'Judge' : (arr[1] == arr[2])?(json['Q'+i][4]=partScore[2]):(json['Q'+i][4]=0);break;
-					case 'Short' : (arr[1] == arr[2])?(json['Q'+i][4]=partScore[3]):(json['Q'+i][4]=0);break;
+					//case 'Short' : (arr[1] == arr[2])?(json['Q'+i][4]=partScore[3]):(json['Q'+i][4]=0);break;
+					case 'Short' : json['Q'+i][4] = setShortScore(arr[1],arr[2],parseFloat(partScore[3]));break;
 				}
 				sumGrade += (parseInt(json['Q'+i][4]) ==NaN)?0:parseInt(json['Q'+i][4]);
 		}
@@ -42,4 +43,16 @@ function toGet(paperID){
 		conRecord.WriteGrade(paperID,json);
 		StoreScore.toStoreScore(sumGrade,paperID);
 	});
+}
+
+
+function setShortScore(realAnswer,getAnswer,scoreSum){
+	var str = realAnswer.split('、');
+	var str2 = getAnswer.split('、');
+	var sinScore = scoreSum/str.length;
+	var realScore = 0;
+	for (var i =0; i<= str.length - 1; i++) {
+		realScore += (str[i] ==str2[i])?sinScore:0; 
+	};
+	return realScore;
 }
